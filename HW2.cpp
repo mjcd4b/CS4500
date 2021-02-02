@@ -2,8 +2,9 @@
 // Title         :
 // Date          :
 // Author        : Yousef Langi
-//				   Justin Comer
-// Email         : mjcd4b@umsystem.edu
+//		   Justin Comer
+// Email         : 
+//		   mjcd4b@umsystem.edu
 // Course #      : CS 4500
 // Section #     : 001
 // File          :
