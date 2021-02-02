@@ -3,7 +3,7 @@
 // Date          :
 // Author        : Yousef Langi
 //		   Justin Comer
-// Email         : 
+// Email         : ylxrz@umsystem.edu
 //		   mjcd4b@umsystem.edu
 // Course #      : CS 4500
 // Section #     : 001
@@ -17,33 +17,28 @@
 #include <iostream>
 using namespace std;
 
-//Triangle class
+static const int SIZE = 2;
+
 class Triangle
 {
 	private:
-		static const int SIZE = 2; //size of arrays for coordinates
-		
-		//These pointers are used to point to arrays that hold the coordinates of all the points.
-		//p1, p2, p3 are all angles of the triangle that the user will in out, and orthocenter,
-		//centroid, and circumcenter are all what the names say.
-		double* p1;
-		double* p2;
-		double* p3;
-		double* orthocenter;
-		double* centroid;
-		double* circumcenter;
+		double* p1 = nullptr;
+		double* p2 = nullptr;
+		double* p3 = nullptr;
+		double* orthocenter = nullptr;
+		double* centroid = nullptr;
+		double* circumcenter = nullptr;
 
 	public:
-		//File headers including for constructor and destructor.
 		Triangle();
 		~Triangle();
-		void setP1(double*);
-		void setP2(double*);
-		void setP3(double*);
-		void setOrthocenter(double*);
-		void setCentroid(double*);
+		void setP1(double*) const;
+		void setP2(double*) const;
+		void setP3(double*)const;
+		void setOrthocenter(double*) const;
+		void setCentroid(double*) const;
 		void setCircumcenter(double*);
-		double* getP1() const;
+		const double* getP1() const;
 		const double* getP2() const;
 		const double* getP3() const;
 		const double* getOrthocenter() const;
@@ -72,34 +67,47 @@ Triangle::~Triangle(){
 	delete [] circumcenter;
 }
 
-//setter for p1, assigns the passed pointer to p1
-void Triangle::setP1(double* point){
-	p1 = point;
+//setter that allows user to change contents of array but not memory location the user is
+//pointing to.
+void Triangle::setP1(double* point) const{
+	for(int i = 0; i < SIZE; i++){
+		p1[i] = point[i];
+	}
 }
 
-void Triangle::setP2(double* point){
-	p2 = point;
+void Triangle::setP2(double* point) const{
+	for(int i = 0; i < SIZE; i++){
+		p2[i] = point[i];
+	}
 }
 
-void Triangle::setP3(double* point){
-	p3 = point;
+void Triangle::setP3(double* point) const{
+	for(int i = 0; i < SIZE; i++){
+		p3[i] = point[i];
+	}
 }
 
-void Triangle::setOrthocenter(double* point){
-	orthocenter = point;
+void Triangle::setOrthocenter(double* point) const{
+	for(int i = 0; i < SIZE; i++){
+		orthocenter[i] = point[i];
+	}
 }
 
 
-void Triangle::setCentroid(double* point){
-	centroid = point;
+void Triangle::setCentroid(double* point) const{
+	for(int i = 0; i < SIZE; i++){
+		centroid[i] = point[i];
+	}
 }
 
 void Triangle::setCircumcenter(double* point){
-	circumcenter = point;
+	for(int i = 0; i < SIZE; i++){
+		circumcenter[i] = point[i];
+	}
 }
 
-//getter, returns the memory location stored in p1
-double* Triangle::getP1() const{
+//getter for p1 which returns the memory location that p1 is pointing at.
+const double* Triangle::getP1() const{
 	return p1;
 }
 
@@ -126,13 +134,47 @@ const double* Triangle::getCircumcenter() const{
 
 int main(){
 
-	double point1[2] = {2,2};
-	double* point2;
+	//These current contents in main just serve as an example of how the pointers, and functions in
+	//Triangle currently work and are meant to be used as a point of reference.
+	//They can be removed at any time.
+
+	//arrays
+	double arr1[SIZE] = {1,2};
+	double arr2[SIZE];
+
+	//pointer, uses const so it cant change the contents of the array being pointed to
+	const double *point = nullptr;
+
+	//create triangle object t
 	Triangle t;
 
-	t.setP1(point1);
-	point2 = t.getP1();
-	cout << *point2 << ", " << *(point2 + 1) << endl;
+	//call setter using arr1 as pointer.
+	t.setP1(arr1);
+
+
+	//user getter to return memory location for p1. Once point is pointing to the same
+	//memory location as p1 it will keep doing so until changed.
+	point = t.getP1();
+
+	//assign values from array point is pointing to arr2
+	for(int i = 0; i < SIZE; i++){
+		arr2[i] = point[i];
+	}
+
+	//arr2 should contain the same values as the array point points to.
+	cout << "arr2 contains: " << arr2[0] << ", " << arr2[1] << endl;
+	cout << "point contains: " << point[0] << ", " << point[1] << endl;
+
+	//reassign arr1 in order to test.
+	arr1[0] = 4;
+	arr1[1] = 5;
+
+	//set values in p1 array.
+	t.setP1(arr1);
+
+	//arr2 should contain 1,2, point should contain 4,5 or whatever is currently stored in p1
+	cout << "arr2 contains: " << arr2[0] << ", " << arr2[1] << endl;
+	cout << "point contains: " << point[0] << ", " << point[1] << endl;
 
 	return 0;
 }
