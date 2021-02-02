@@ -17,10 +17,15 @@
 #include <iostream>
 using namespace std;
 
+//Triangle class
 class Triangle
 {
 	private:
-		static const int SIZE = 2;
+		static const int SIZE = 2; //size of arrays for coordinates
+		
+		//These pointers are used to point to arrays that hold the coordinates of all the points.
+		//p1, p2, p3 are all angles of the triangle that the user will in out, and orthocenter,
+		//centroid, and circumcenter are all what the names say.
 		double* p1;
 		double* p2;
 		double* p3;
@@ -29,6 +34,7 @@ class Triangle
 		double* circumcenter;
 
 	public:
+		//File headers including for constructor and destructor.
 		Triangle();
 		~Triangle();
 		void setP1(double*);
@@ -66,43 +72,33 @@ Triangle::~Triangle(){
 	delete [] circumcenter;
 }
 
+//setter for p1, assigns the passed pointer to p1
 void Triangle::setP1(double* point){
-	for(int i = 0; i < SIZE; i++){
-		p1[i] = point[i];
-	}
+	p1 = point;
 }
 
 void Triangle::setP2(double* point){
-	for(int i = 0; i < SIZE; i++){
-		p2[i] = point[i];
-	}
+	p2 = point;
 }
 
 void Triangle::setP3(double* point){
-	for(int i = 0; i < SIZE; i++){
-		p3[i] = point[i];
-	}
+	p3 = point;
 }
 
 void Triangle::setOrthocenter(double* point){
-	for(int i = 0; i < SIZE; i++){
-		orthocenter[i] = point[i];
-	}
+	orthocenter = point;
 }
 
 
 void Triangle::setCentroid(double* point){
-	for(int i = 0; i < SIZE; i++){
-		centroid[i] = point[i];
-	}
+	centroid = point;
 }
 
 void Triangle::setCircumcenter(double* point){
-	for(int i = 0; i < SIZE; i++){
-		circumcenter[i] = point[i];
-	}
+	circumcenter = point;
 }
 
+//getter, returns the memory location stored in p1
 double* Triangle::getP1() const{
 	return p1;
 }
