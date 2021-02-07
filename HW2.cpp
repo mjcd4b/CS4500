@@ -17,6 +17,7 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <iomanip>
 using namespace std;
 
 static const int SIZE = 2;
@@ -39,6 +40,7 @@ class Triangle
 	public:
 		Triangle();
 		~Triangle();
+		void outputDescription();
 		void get3Points(Triangle*);
 		void errMessage();
 		bool checkForNonRealNums(std::string);
@@ -103,13 +105,21 @@ Triangle::~Triangle(){
 	delete [] circ;
 }
 
+void Triangle::outputDescription(){
+	cout << "This program takes in three user generated points and then calculates the\n"
+			<< "orthocenter, centroid and circumcenter. Using the orthocenter and centroid\n"
+			<< "this program also calculates the euler line if the input points do not form\n"
+			<< "an equilateral triangle. Finally, this program will calculate the distance\n"
+			<< "from the circumcenter to the euler line and a percentage error.\n\n";
+}
+
 /// <summary>
 /// obtains 3 points from user, checks for Real Numbers, inserts points in object once validated
 /// </summary>
 /// <param name="t"> pointer for triangle object</param>
 void Triangle::get3Points(Triangle* t)
 {
-	std::cout << "Hello Please Enter 3 NON-COLINEAR Points(x,y) In A Cartesian Two dimensional Space\n";
+	std::cout << "Please Enter 3 NON-COLINEAR Points(x,y) In A Cartesian Two dimensional Space\n";
 
 	std::string n;
 	double point;
@@ -427,13 +437,13 @@ double* Triangle::lineLineIntersection(double a1, double b1, double c1, double a
 
 //Displays calculated centers to console.
 void Triangle::displayCenters(){
-		cout << "Orthocenter: ( " << ortho[0] << " , " << ortho[1] << " )\n";
+		cout << "\nOrthocenter: ( " << ortho[0] << " , " << ortho[1] << " )\n";
 		cout << "Centroid: ( " << cent[0] << " , " << cent[1] << " )\n";
 		cout << "Circumcenter: ( " << circ[0] << " , " << circ[1] << " )\n";
 }
 
 //checks whether the triangle is equilateral by comparing the distances of the centers to
-//epsilon which is an assigned small quantity. 
+//epsilon which is an assigned small quantity.
 bool Triangle::checkEquilateral(double epsilon = 0.01){
 	double d1 = sqrt(pow(ortho[0]-cent[0], 2)+ pow(ortho[1]-cent[1], 2));
 	double d2 = sqrt(pow(ortho[0]-circ[0], 2)+ pow(ortho[1]-circ[1], 2));
@@ -452,10 +462,13 @@ bool Triangle::checkEquilateral(double epsilon = 0.01){
 	return false;
 }
 
-//calculates the slope, yintercept and length of the Euler Line.
+//calculates the slope, yintercept and length of the Euler Line for slope intercept form: y = mx + b.
 void Triangle::eulerLineCalc(){
+	//calculate slope: m = (y1 - y2) / (x1 - x2)
 	ELSlope = (ortho[1] - cent[1]) / (ortho[0] - cent[0]);
-	ELYIntercept = cent[1] - (ELSlope * cent[0]);
+	//calc y intercept: b = (m * -x1) +y 1
+	ELYIntercept = (ELSlope * -cent[0]) + cent[1];
+	////calculate length using distance formula
 	ELLength = sqrt(pow(ortho[0] - cent[0], 2) + pow(ortho[1] - cent[1], 2));
 }
 
@@ -467,22 +480,27 @@ void Triangle::outputEulerLine(){
 
 //Calculates D, the distance between the euler line and circumcenter.
 void Triangle::distanceEL(){
+
+	//calculated slope for perpendicular line: m2 = -1/m1
+	double pSlope = -1/ELSlope;
+	//calc y intercept: b = (m * -x1) + y1
+	double pYInt = -circ[0] * pSlope + circ[1];
 	
-	//The equation used is |Ax + By + C| / sqrt(A^2 + B^2)
-	//The x and y value are the circumcenter and B = 1 in all cases since
-	//converting from slope intercept to standard form.
-	double top = abs((-ELSlope * circ[0]) + (circ[1]) + (-ELYIntercept));
-	double bottom = sqrt(pow(-ELSlope, 2) + 1);
+	//point of intercept between EL and perpendicular line used to calculating distance.
+	double inter[2];
+	// xvalue = (b2 - b1) / (m1 - m2)
+	inter[0] = (pYInt -ELYIntercept) / (ELSlope - pSlope);
+	// yvalue = m * xvalue + b
+	inter[1] = pSlope * inter[0] + pYInt;
 
-	cout << top << " " << bottom << endl;
+	D = sqrt(pow(circ[0] - inter[0], 2) + pow(circ[1] - inter[1], 2));
 
-	D = top / bottom;
-
-	cout << "D: " << D;
+	cout << fixed << "D: " << D << endl;
 }
 
 void Triangle::calcPercentageError(){
-	percError = D / ELLength;
+	percError = (D / ELLength) * 100;
+	cout << "Percentage Error: %" << setprecision(2) << fixed << percError << endl;
 }
 
 //setter that allows user to change contents of array but not memory location the user is
@@ -553,6 +571,7 @@ const double* Triangle::getCircumcenter() const{
 int main(){
 
 	Triangle t;
+	t.outputDescription();
 	t.get3Points(&t);
 	t.deterNonColinear(&t);
 	t.findOrthoCenter(&t);
@@ -568,7 +587,8 @@ int main(){
 	t.outputEulerLine();
 	t.distanceEL();
 	t.calcPercentageError();
-
+	cout << "Press ENTER to exit program";
+	cin.ignore();
 
 	return 0;
 }
