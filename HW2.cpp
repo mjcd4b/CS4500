@@ -46,7 +46,7 @@ class Triangle
 		bool checkForNonRealNums(std::string);
 		double stringToDouble(std::string);
 		void insertCordinate(int pointNum, std::string var, double num);
-		void deterNonColinear(Triangle*);
+		bool deterNonColinear(Triangle*);
 		double calcDist(const double*, const double*);
 		void findOrthoCenter(Triangle*);
 		void findCentroid(Triangle*);
@@ -267,7 +267,7 @@ void Triangle::insertCordinate(int pointNum, std::string var, double num)
 /// obtains the 3 points, then determines the distance between all 3 points, and determines if colinear or non-colinear
 /// </summary>
 /// <param name="t"> pointer for triangle object </param>
-void Triangle::deterNonColinear(Triangle* t)
+bool Triangle::deterNonColinear(Triangle* t)
 {
 
 	const double* p1 = t->getP1();
@@ -281,14 +281,10 @@ void Triangle::deterNonColinear(Triangle* t)
 	if ((distP1P2 + distP2P3) == distP1P3)
 	{
 		std::cout << "\nError: POINTS PROVIDED ARE COLINEAR, POINTS MUST BE NON-COLINEAR! PLEASE TRY AGAIN.\n";
-		std::cout << "\nPress ENTER to exit.\n";
-		std::string n;
-		std::getline(std::cin, n);
-		if (n == "\n")
-		{
-			exit(0);
-		}
+		return false;
 	}
+
+	return true;
 }
 
 double Triangle::calcDist(const double* p1, const double* p2)
@@ -573,7 +569,12 @@ int main(){
 	Triangle t;
 	t.outputDescription();
 	t.get3Points(&t);
-	t.deterNonColinear(&t);
+	if(!t.deterNonColinear(&t))
+	{
+		std::cout << "\nPress ENTER to exit.\n";
+		cin.ignore();
+		return 0;
+	}
 	t.findOrthoCenter(&t);
 	t.findCentroid(&t);
 	t.findCircumCenter(&t);
