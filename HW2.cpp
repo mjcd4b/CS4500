@@ -470,26 +470,61 @@ void Triangle::eulerLineCalc(){
 
 //Display Euler line in slope intercept form.
 void Triangle::outputEulerLine(){
-	cout << "Euler Line: Y = " << ELSlope << "X + ( " << ELYIntercept << " )" << endl;
+
+	//conditional that tests the slope of the Euler line in order to determine if
+	//it is vertical, horizontal, or neither.
+	if(ELSlope == 0){ 
+		cout << "Euler Line: Y = " << ELYIntercept << endl;
+	}
+	else if (isinf(ELSlope)){
+		cout << "Euler Line: X = " << ortho[0] << endl;
+	}
+	else {
+		cout << "Euler Line: Y = " << ELSlope << "X + ( " << ELYIntercept << " )" << endl;
+	}
+
 }
 
 
 //Calculates D, the distance between the euler line and circumcenter.
 void Triangle::distanceEL(){
 
-	//calculated slope for perpendicular line: m2 = -1/m1
-	double pSlope = -1/ELSlope;
-	//calc y intercept: b = (m * -x1) + y1
-	double pYInt = -circ[0] * pSlope + circ[1];
-	
-	//point of intercept between EL and perpendicular line used to calculating distance.
+	double pSlope;
+	double pYInt;
 	double inter[2];
-	// xvalue = (b2 - b1) / (m1 - m2)
-	inter[0] = (pYInt -ELYIntercept) / (ELSlope - pSlope);
-	// yvalue = m * xvalue + b
-	inter[1] = pSlope * inter[0] + pYInt;
+	
+	//conditional that tests the slope of the Euler line in order to determine if
+	//it is vertical, horizontal, or neither.
+	if (ELSlope == 0){	//If the EL is horizontal...
+		
+		//D = |y1 - y2| where we use the y values from circumcenter and orthocenter.
+		//Orthocenter because it was used to calculate euler line
+		D = abs(circ[1] - ortho[1]);
+	}
+	else if (isinf(ELSlope)){	//If the EL is vertical...
+		
+		//D = |x1 - x2| where we use the x values from circumcenter and orthocenter.
+		D = abs(circ[0] - ortho[0]);
+	}
+	else{ 	//Other lines
+		
+		//calculated slope for perpendicular line: m2 = -1/m1
+		pSlope = -1/ELSlope;
+		//calc y intercept: b = (m * -x1) + y1
+		pYInt = -circ[0] * pSlope + circ[1];
 
-	D = sqrt(pow(circ[0] - inter[0], 2) + pow(circ[1] - inter[1], 2));
+		//point of intercept between EL and perpendicular line used to calculating distance.
+		// xvalue = (b2 - b1) / (m1 - m2)
+		inter[0] = (pYInt -ELYIntercept) / (ELSlope - pSlope);
+		// yvalue = m * xvalue + b
+		inter[1] = pSlope * inter[0] + pYInt;
+
+		//D = distance between circumcenter and point of intersection between EL and
+		//line perpendiculr to EL that goes through circumcenter.
+		D = sqrt(pow(circ[0] - inter[0], 2) + pow(circ[1] - inter[1], 2));
+	}
+
+
 
 	cout << fixed << "D: " << D << endl;
 }
