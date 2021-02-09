@@ -1,17 +1,25 @@
 //============================================================================
-// Title         :
-// Date          :
-// Author        : Yousef Langi
+// Title         :Euler Line Calculator
+// Date          :2/8/2021
+// Author        : HW2 Group 2
+//		   Yousef Langi
 //		   Justin Comer
 // Email         : ylxrz@umsystem.edu
 //		   mjcd4b@umsystem.edu
 // Course #      : CS 4500
 // Section #     : 001
-// File          :
+// File          :https://github.com/mjcd4b/CS4500/HW2.cpp
 // Language      : C++
-// External Files:
-// Description   :
+// External Files: <iostream>, <cmath>, <sstream>, <iomanip>
+// Description   : This program takes in three user generated points and then 
+// calculates the orthocenter, centroid and circumcenter. Using the orthocenter 
+// and centroid this program also calculates the euler line if the input points 
+// do not form an equilateral triangle. Finally, this program will calculate the 
+// distance from the circumcenter to the euler line and a percentage error.
 // Resources     :
+// http://www.cplusplus.com/reference/algorithm/max/
+// https://stackoverflow.com/questions/18971533/c-comparison-of-two-double-values-not-working-properly
+// https://www.geeksforgeeks.org/difference-between-const-int-const-int-const-and-int-const/
 //============================================================================
 
 #include <iostream>
@@ -22,20 +30,21 @@ using namespace std;
 
 static const int SIZE = 2;
 
+//declaration for Triangle class.
 class Triangle
 {
 	private:
-		double ELSlope;
-		double ELYIntercept;
-		double ELLength;
-		double D;
-		double percError;
-		double* p1 = nullptr;
-		double* p2 = nullptr;
-		double* p3 = nullptr;
-		double* ortho = nullptr;
-		double* cent = nullptr;
-		double* circ = nullptr;
+		double ELSlope;		//Euler Line slope
+		double ELYIntercept;	//Euler Line Y intercept
+		double ELLength;	//Length between orthocenter and centroid, used for calculating percError.
+		double D;		//Distance between euler line and circumcenter
+		double percError;	//percentage error
+		double* p1 = nullptr;	//p1, p2, p3 are pointers to arrays that hold user input points for
+		double* p2 = nullptr;	//triangle. In each array the first element is the x value, and the
+		double* p3 = nullptr;	//second element is the y value. EX: p1[0] = x, p1[1] = y.
+		double* ortho = nullptr;	//orthocenter 
+		double* cent = nullptr;		//centroid
+		double* circ = nullptr;		//circumcenter
 
 	public:
 		Triangle();
@@ -60,10 +69,6 @@ class Triangle
 		void outputEulerLine();
 		void distanceEL();
 		void calcPercentageError();
-
-
-
-
 		void setP1(double*) const;
 		void setP2(double*) const;
 		void setP3(double*)const;
@@ -105,6 +110,9 @@ Triangle::~Triangle(){
 	delete [] circ;
 }
 
+//******************************************************************************
+//outputDescription displays a description of what the progam does to the user *
+//******************************************************************************
 void Triangle::outputDescription(){
 	cout << "This program takes in three user generated points and then calculates the\n"
 			<< "orthocenter, centroid and circumcenter. Using the orthocenter and centroid\n"
@@ -114,8 +122,8 @@ void Triangle::outputDescription(){
 }
 
 /// <summary>
-/// obtains 3 points from user, checks for Real Numbers, inserts points in object once validated
-/// </summary>
+///Obtains 3 points from user, checks for Real Numbers, inserts points in object once validated
+/// <summary>
 /// <param name="t"> pointer for triangle object</param>
 void Triangle::get3Points(Triangle* t)
 {
@@ -154,6 +162,9 @@ void Triangle::get3Points(Triangle* t)
 	}while (pointNum < 3); // stops until 3 points(x,y) have been inputed
 }
 
+//*************************************************
+//errMessage displays a error message to the user *						   *
+//*************************************************
 void Triangle::errMessage()
 {
 	std::cout << "Error: POINTS MUST BE NON-COLINEAR REAL NUMBERS\n";
@@ -226,6 +237,9 @@ double Triangle::stringToDouble(std::string s)
 	return num;
 }
 
+//***********************************************************************
+//insertCordinate inserts user coordinates into their respective arrays *
+//***********************************************************************
 void Triangle::insertCordinate(int pointNum, std::string var, double num)
 {
 	if (pointNum == 1)
@@ -287,6 +301,9 @@ bool Triangle::deterNonColinear(Triangle* t)
 	return true;
 }
 
+//********************************************************************************
+//calcDist calculates the distance between two points using the distance formula *
+//********************************************************************************
 double Triangle::calcDist(const double* p1, const double* p2)
 {
 	return sqrt(pow(p2[0] - p1[0], 2) + pow(p2[1] - p1[1], 2)); //distance formula
@@ -348,6 +365,9 @@ void Triangle::findOrthoCenter(Triangle* t)
 
 }
 
+//******************************************************
+//findCentroid calculates the position of the centroid *
+//******************************************************
 void Triangle::findCentroid(Triangle* t)
 {
 	const double* p1 = t->getP1();
@@ -431,15 +451,20 @@ double* Triangle::lineLineIntersection(double a1, double b1, double c1, double a
     return cir;
 }
 
-//Displays calculated centers to console.
+//***********************************************************************************************
+//displayCenters displays the traingles orthocenter, centroid, and circcumcenter to the console *
+//***********************************************************************************************
 void Triangle::displayCenters(){
 		cout << "\nOrthocenter: ( " << ortho[0] << " , " << ortho[1] << " )\n";
 		cout << "Centroid: ( " << cent[0] << " , " << cent[1] << " )\n";
 		cout << "Circumcenter: ( " << circ[0] << " , " << circ[1] << " )\n";
 }
 
-//checks whether the triangle is equilateral by comparing the distances of the centers to
-//epsilon which is an assigned small quantity.
+
+//***********************************************************************************************
+//checkEquilateral checks whether the triangle is equilateral by comparing the distances of the *
+//centers to epsilon which is an assigned small quantity.					*
+//***********************************************************************************************
 bool Triangle::checkEquilateral(double epsilon = 0.01){
 	double d1 = sqrt(pow(ortho[0]-cent[0], 2)+ pow(ortho[1]-cent[1], 2));
 	double d2 = sqrt(pow(ortho[0]-circ[0], 2)+ pow(ortho[1]-circ[1], 2));
@@ -458,7 +483,10 @@ bool Triangle::checkEquilateral(double epsilon = 0.01){
 	return false;
 }
 
-//calculates the slope, yintercept and length of the Euler Line for slope intercept form: y = mx + b.
+//***********************************************************************************************
+//eulerLineCalc calculates the slope, yintercept and length of the Euler Line for slope 	*
+//intercept form: y = mx + b.									*
+//***********************************************************************************************
 void Triangle::eulerLineCalc(){
 	//calculate slope: m = (y1 - y2) / (x1 - x2)
 	ELSlope = (ortho[1] - cent[1]) / (ortho[0] - cent[0]);
@@ -468,7 +496,9 @@ void Triangle::eulerLineCalc(){
 	ELLength = sqrt(pow(ortho[0] - cent[0], 2) + pow(ortho[1] - cent[1], 2));
 }
 
-//Display Euler line in slope intercept form.
+//********************************************************************
+// outputEulerLine displays the Euler line in slope intercept form.  *
+//********************************************************************
 void Triangle::outputEulerLine(){
 
 	//conditional that tests the slope of the Euler line in order to determine if
@@ -486,7 +516,9 @@ void Triangle::outputEulerLine(){
 }
 
 
-//Calculates D, the distance between the euler line and circumcenter.
+//*********************************************************************************
+// distanceEL calculates D, the distance between the euler line and circumcenter. *
+//*********************************************************************************
 void Triangle::distanceEL(){
 
 	double pSlope;
@@ -529,72 +561,107 @@ void Triangle::distanceEL(){
 	cout << fixed << "D: " << D << endl;
 }
 
+//*********************************************************************************
+// calcPercentageError calculates the percentage error.	  			  *
+//*********************************************************************************
 void Triangle::calcPercentageError(){
 	percError = (D / ELLength) * 100;
 	cout << "Percentage Error: %" << setprecision(2) << fixed << percError << endl;
 }
 
-//setter that allows user to change contents of array but not memory location the user is
-//pointing to.
+//***************
+//setter for p1 *
+//***************
 void Triangle::setP1(double* point) const{
 	for(int i = 0; i < SIZE; i++){
 		p1[i] = point[i];
 	}
 }
 
+//***************
+//setter for p2 *
+//***************
 void Triangle::setP2(double* point) const{
 	for(int i = 0; i < SIZE; i++){
 		p2[i] = point[i];
 	}
 }
 
+//***************
+//setter for p3 *
+//***************
 void Triangle::setP3(double* point) const{
 	for(int i = 0; i < SIZE; i++){
 		p3[i] = point[i];
 	}
 }
 
+//************************
+//setter for orthocenter *
+//************************
 void Triangle::setOrthocenter(double* point) const{
 	for(int i = 0; i < SIZE; i++){
 		ortho[i] = point[i];
 	}
 }
 
-
+//*********************
+//setter for centroid *
+//*********************
 void Triangle::setCentroid(double* point) const{
 	for(int i = 0; i < SIZE; i++){
 		cent[i] = point[i];
 	}
 }
 
+//*************************
+//setter for circumcenter *
+//*************************
 void Triangle::setCircumcenter(double* point){
 	for(int i = 0; i < SIZE; i++){
 		circ[i] = point[i];
 	}
 }
 
-//getter for p1 which returns the memory location that p1 is pointing at.
+//***************
+//getter for p1 *
+//***************
 const double* Triangle::getP1() const{
 	return p1;
 }
 
+//***************
+//getter for p2 *
+//***************
 const double* Triangle::getP2() const{
 	return p2;
 }
 
+//***************
+//getter for p3 *
+//***************
 const double* Triangle::getP3() const{
 	return p3;
 }
 
+//************************
+//getter for orthocenter *
+//************************
 const double* Triangle::getOrthocenter() const{
 	return ortho;
 }
 
 
+//*********************
+//getter for centroid *
+//*********************
 const double* Triangle::getCentroid() const{
 	return cent;
 }
 
+//*************************
+//getter for circumcenter *
+//*************************
 const double* Triangle::getCircumcenter() const{
 	return circ;
 }
