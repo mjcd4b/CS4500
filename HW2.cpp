@@ -8,7 +8,7 @@
 //		   mjcd4b@umsystem.edu
 // Course #      : CS 4500
 // Section #     : 001
-// File          :https://github.com/mjcd4b/CS4500/HW2.cpp
+// File          :https://github.com/mjcd4b/CS4500/blob/main/HW2.cpp
 // Language      : C++
 // External Files: <iostream>, <cmath>, <sstream>, <iomanip>
 // Description   : This program takes in three user generated points and then 
